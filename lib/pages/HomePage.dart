@@ -31,7 +31,7 @@ class _HomePageState extends State<HomeScreen> {
     // You need to replace 'Your result text here' with the actual result text obtained from your AI model
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ResultsScreen(resultText: 'Your result text here')),
+      MaterialPageRoute(builder: (context) => ResultsScreen(resultText: 'Солонго')),
     );
 
     print('Uploading file: $_fileName');

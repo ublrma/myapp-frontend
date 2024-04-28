@@ -11,7 +11,7 @@ class ResultsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Нүүр хуудасруу буцах'),
+        title: Text('Буцах'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -27,10 +27,13 @@ class ResultsScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          Positioned.fill(
+          Positioned (
+            top: 0,
+            left: 0,
+            right: 0,
             child: Image.asset(
               'assets/images/result.png',
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
             ),
           ),
           
@@ -39,7 +42,11 @@ class ResultsScreen extends StatelessWidget {
             left: 0,
             right: 0,
             child: Image.asset(
+              
               'assets/images/white_dragon.png',
+              
+                width: 150,
+                height: 140,
               fit: BoxFit.contain,
             ),
           ),
