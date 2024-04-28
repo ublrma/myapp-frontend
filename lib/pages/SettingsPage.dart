@@ -26,22 +26,22 @@ class SettingsScreen extends StatelessWidget {
           Expanded(
             child: ListView(
               children: <Widget>[
-                _buildSettingOption(context, Icons.edit, 'Edit Profile', [
-                  _buildSubSettingOption(context, 'Edit User Name', () => _editUserName(context)),
-                  _buildSubSettingOption(context, 'Edit Password', () => _editPassword(context)),
-                  _buildSubSettingOption(context, 'Change Phone Number', () => _changePhoneNumber(context)),
-                  _buildSubSettingOption(context, 'Delete Account', () => _deleteAccount(context)),
+                _buildSettingOption(context, Icons.edit, 'Хэрэглэгчийн тохиргоо', [
+                  _buildSubSettingOption(context, 'Нэр өөрчлөх', () => _editUserName(context)),
+                  _buildSubSettingOption(context, 'Нууц үг солих', () => _editPassword(context)),
+                  _buildSubSettingOption(context, 'Утасны дугаар солих', () => _changePhoneNumber(context)),
+                  _buildSubSettingOption(context, 'Хэрэглэгчийн бүртгэл устгах', () => _deleteAccount(context)),
                 ]),
-                _buildSettingOption(context, Icons.contact_mail, 'Contacts', [
+                _buildSettingOption(context, Icons.contact_mail, 'Холбоо барих', [
                   _buildSubSettingOption(context, 'Instagram', () => _openInstagram()),
                   _buildSubSettingOption(context, 'Facebook', () => _openFacebook()),
                 ]),
-                _buildSettingOption(context, Icons.info, 'User Guide', [
-                  _buildSubSettingOption(context, 'Long Text Information', () => _showUserGuide(context)),
+                _buildSettingOption(context, Icons.info, 'Хэрэглэгчийн заавар', [
+                  _buildSubSettingOption(context, 'Энэхүү гар утсаны аппликейшныг хэрэглэхдээ бүртгүүлээд нэвтэрч орно. Мөн аудио файл оруулад хөрвүүлэх товч дээр дарж үр дүнгээ харна.Түүх хэсэгт дарж өмнө нь хөрвүүлсэн аудионы бүртгэлээ удирдана. Тохиргоо хэсэгт дарж хэрэглэгчийн бүртгэлээ устгана. ', () => _showUserGuide(context)),
                 ]),
-                _buildSettingOption(context, Icons.logout, 'Logout', [
-                  _buildSubSettingOption(context, 'Yes', () => _logout(context)),
-                  _buildSubSettingOption(context, 'No', () => Navigator.pop(context)),
+                _buildSettingOption(context, Icons.logout, 'Системээс гарах', [
+                  _buildSubSettingOption(context, 'Тийм', () => _logout(context)),
+                  _buildSubSettingOption(context, 'Үгүй', () => Navigator.pop(context)),
                 ]),
               ],
             ),
@@ -71,7 +71,7 @@ class SettingsScreen extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              'Your App Title',
+              'Хангэрэл',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -107,20 +107,20 @@ void _editUserName(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Edit User Name'),
+        title: Text('Хэрэглэгчийн нэрийг солох'),
         content: TextField(
-          decoration: InputDecoration(hintText: 'Enter new user name'),
+          decoration: InputDecoration(hintText: 'Шинэ нэр оруулах'),
         ),
         actions: <Widget>[
           TextButton(
-            child: Text('Save'),
+            child: Text('Хадгалах'),
             onPressed: () {
               // Implement logic to save new user name
               Navigator.pop(context);
             },
           ),
           TextButton(
-            child: Text('Cancel'),
+            child: Text('Болих'),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -137,34 +137,34 @@ void _editPassword(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Edit Password'),
+        title: Text('Нууц үг солих'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              decoration: InputDecoration(hintText: 'Enter current password'),
+              decoration: InputDecoration(hintText: 'Хуучин нууц үгээ оруулна уу'),
               obscureText: true,
             ),
             TextField(
-              decoration: InputDecoration(hintText: 'Enter new password'),
+              decoration: InputDecoration(hintText: 'Шинэ нууц үгээ оруулна уу'),
               obscureText: true,
             ),
             TextField(
-              decoration: InputDecoration(hintText: 'Confirm new password'),
+              decoration: InputDecoration(hintText: 'Шинэ нууц үгээ дахин оруулна уу'),
               obscureText: true,
             ),
           ],
         ),
         actions: <Widget>[
           TextButton(
-            child: Text('Save'),
+            child: Text('Хадгалах'),
             onPressed: () {
               // Implement logic to save new password
               Navigator.pop(context);
             },
           ),
           TextButton(
-            child: Text('Cancel'),
+            child: Text('Болих'),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -181,21 +181,21 @@ void _changePhoneNumber(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Change Phone Number'),
+        title: Text('Утасны дугаараа солих'),
         content: TextField(
-          decoration: InputDecoration(hintText: 'Enter new phone number'),
+          decoration: InputDecoration(hintText: 'Шинэ утасны дугаар оруулах'),
           keyboardType: TextInputType.phone,
         ),
         actions: <Widget>[
           TextButton(
-            child: Text('Save'),
+            child: Text('Хадгадлах'),
             onPressed: () {
               // Implement logic to save new phone number
               Navigator.pop(context);
             },
           ),
           TextButton(
-            child: Text('Cancel'),
+            child: Text('Болих'),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -212,11 +212,11 @@ void _deleteAccount(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Delete Account'),
-        content: Text('Are you sure you want to delete your account? This action cannot be undone.'),
+        title: Text('Хэргэлэгчийн бүртгэл устгах'),
+        content: Text('Та үнэхээр устгахдаа итгэлтэй байна уу?'),
         actions: <Widget>[
           TextButton(
-            child: Text('Delete'),
+            child: Text('Устгах'),
             onPressed: () {
               // Implement logic to delete account
               Navigator.pop(context);
@@ -224,7 +224,7 @@ void _deleteAccount(BuildContext context) {
             },
           ),
           TextButton(
-            child: Text('Cancel'),
+            child: Text('Болих'),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -241,8 +241,8 @@ void _showUserGuide(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('User Guide'),
-        content: Text('Here is a long text with user instructions.'),
+        title: Text('хэрэглэгчийн туслах'),
+        content: Text('Энэхүү гар утсаны аппликейшныг хэрэглэхдээ бүртгүүлээд нэвтэрч орно. Мөн аудио файл оруулад хөрвүүлэх товч дээр дарж үр дүнгээ харна.Түүх хэсэгт дарж өмнө нь хөрвүүлсэн аудионы бүртгэлээ удирдана. Тохиргоо хэсэгт дарж хэрэглэгчийн бүртгэлээ устгана..'),
         actions: <Widget>[
           TextButton(
             child: Text('Close'),
