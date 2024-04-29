@@ -3,11 +3,10 @@ import 'package:my_app/Service/api.dart';
 import 'package:my_app/bloc/User/userstates.dart';
 import 'package:my_app/bloc/User/uevents.dart';
 import 'package:my_app/Model/User.dart';
-import 'package:my_app/providers/common.dart';
+import 'package:my_app/provider/provider.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:ihamt/global_keys.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(UserInitial()) {
@@ -16,7 +15,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       try {
         final api = ApiService();
         final res = await api.login(event.email, event.password);
-
+        
         print(res.statusCode);
         if (res.statusCode == 200) {
           print("done");
@@ -24,9 +23,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           final result = await api.getUserData(res.data);
           print(result);
           User a = User.fromJson(result.data);
-          Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
-                  listen: false)
-              .updateUser(a);
+          // Provider.of<CommonProvider>().updateUser(a);
           emit(UserLoginSuccess());
         } else {
           emit(UserLoginFailure("Нууц үг нэр буруу"));

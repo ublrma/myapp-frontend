@@ -1,5 +1,6 @@
 //SignUpPage.dart
 
+import 'package:my_app/Service/api.dart';
 import 'package:my_app/pages/LoginPage.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,43 @@ class SignupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    
+  void checkSignUp()async{
+    try {
+      final api = ApiService();
+        final res = await api.signup(_phonenumberController.text, _passwordController.text, _usernameController.text);
+        if(res.statusCode == 201){
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Бүртгэл амжилттай"),
+                backgroundColor: Colors.green,
+              ),
+            );
+          Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+        }else{
+           ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Хэрэглэгч бүртгэлтэй байна."),
+                backgroundColor: Colors.red,
+              ),
+            );
+        }
+    } catch (e) {
+         ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Хэрэглэгч бүртгэлтэй байна."),
+                backgroundColor: Colors.red,
+              ),
+            );
+      print(e);
+    }
+        
+  }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Color(0xFF00C7C8),
@@ -104,11 +142,7 @@ class SignupScreen extends StatelessWidget {
                   ),
                   width: double.infinity, 
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
-                      );
+                    onPressed: () {checkSignUp();
                     },
                     child: Text(
                       'Бүртгүүлэх',

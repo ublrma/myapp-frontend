@@ -1,6 +1,11 @@
 // HistoryPage.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_app/Model/index.dart';
 
+import 'package:my_app/provider/provider.dart'; 
+import 'package:provider/provider.dart';
+import 'package:dio/dio.dart';
 void main() => runApp(MyApp());
 
 // MyApp widget, which is the root of your application.
@@ -19,14 +24,16 @@ class MyApp extends StatelessWidget {
 
 // History data model
 class History {
+  ConvertedFile file ;
   String date;
-  String translator;
+  String translator ;
   bool isSelected = false; // To keep track of selection status
   bool isExpanded = false; // To keep track of expansion status
 
   History({
     required this.date,
     required this.translator,
+    required this.file,
   });
 }
 
@@ -37,10 +44,8 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
+  
   List<History> histories = [
-    History(date: '2024.03.30 22:30', translator: 'Хулгана'),
-    History(date: '2024.03.30 19:20', translator: 'Лууван'),
-    History(date: '2024.03.30 19:10', translator: 'Муур'),
   ];
   List<History> filteredHistories = [];
   bool isDeleteMode = false;
@@ -48,9 +53,46 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   void initState() {
     super.initState();
+    readHistory(1);
     filteredHistories = histories;
   }
 
+
+Future<void> readHistory(int userId) async {
+  Dio dio = Dio();
+  try {
+    int? usr_id;
+    try {
+        usr_id = Provider.of<CommonProvider>(context, listen: false).usr!.userId;
+      } catch (e) {
+        print(e);
+      }
+      print(usr_id);
+    var response = await dio.get(
+      'http://localhost:3000/history',
+        queryParameters: {
+        'userId': usr_id
+      }
+    );
+    if (response.statusCode == 200) {
+      List<ConvertedFile> data = ConvertedFile.fromList(response.data);
+      setState(() {
+
+      for(int i = 0; i<data.length ; i++){
+        histories.add(History(date: '2024.03.30 22:30', translator: data[i].text, file: data[i]));
+      }
+    filteredHistories = histories;
+      });
+      print(data.length);
+      
+      
+    } else {
+      print("Failed to upload file with status code: ${response.statusCode}");
+    }
+  } catch (e) {
+    print("Error uploading file: $e");
+  }
+}
   void updateSearchQuery(String newQuery) {
     setState(() {
       filteredHistories = histories

@@ -1,8 +1,15 @@
 //HomePage.dart
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:my_app/pages/ResultsPage.dart';
+import 'dart:typed_data';
+import 'package:dio/dio.dart';
+import 'package:mime/mime.dart';
+
+import 'package:http_parser/http_parser.dart';
+import 'package:my_app/provider/provider.dart'; 
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,29 +19,118 @@ class HomeScreen extends StatefulWidget {
 class _HomePageState extends State<HomeScreen> {
   String? _fileName;
 
-  Future<void> _pickAudioFile() async {
+  Uint8List? fileBytes;
+  String? fileName;
+
+
+  Future<void> pickFile() async {
+    
+      print("file uploading start");
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['mp3', 'wav', 'm4a'],
+      allowedExtensions: ['m4a'],
+      withData: true, 
     );
 
+      print("file uploading end");
     if (result != null) {
+      
       setState(() {
-        _fileName = result.files.single.name;
+        fileBytes = result.files.single.bytes;
+        fileName = result.files.single.name;
       });
+      print("setstated");
+      // await audioPlayer.play(BytesSource(fileBytes!));
+      
+      try {
+        int? usr_id = Provider.of<CommonProvider>(context, listen: false).usr!.userId;
+        print("file uploading usr id"+ usr_id.toString());
+        await uploadFile(fileBytes!, fileName! , usr_id! );
+      } catch (e) {
+        print(e);
+      }
+      
+    }
+    
+  }
+
+Future<void> uploadFile(Uint8List fileData, String fileName, int userId) async {
+  Dio dio = Dio();
+  String? mimeType = lookupMimeType(fileName);  // Use mime package to get MIME type
+  MediaType? mediaType;
+
+  if (mimeType != null) {
+    List<String> typeSubtype = mimeType.split('/');
+    if (typeSubtype.length == 2) {
+      mediaType = MediaType(typeSubtype[0], typeSubtype[1]);  // Create MediaType
     }
   }
 
-  Future<void> _uploadAudioFile() async {
-    // Implement your upload logic here
+  FormData formData = FormData.fromMap({
+    "audioFile": MultipartFile.fromBytes(
+      fileData, 
+      filename: fileName,
+      contentType: mediaType ?? MediaType('audio', 'm4a')),  // Use MediaType
+    "user_id": userId.toString(),  // Add user_id as part of the form data
+  });
 
-    // You need to replace 'Your result text here' with the actual result text obtained from your AI model
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ResultsScreen(resultText: 'Солонго')),
+  try {
+    
+    var response = await dio.post(
+      'http://localhost:3000/upload',
+      data: formData,
+      options: Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
     );
+    if (response.statusCode == 200) {
+      print("File uploaded successfully");
+    } else {
+      print("Failed to upload file with status code: ${response.statusCode}");
+    }
+  } catch (e) {
+    print("Error uploading file: $e");
+  }
+}
 
-    print('Uploading file: $_fileName');
+
+
+  Future<void> Convert() async {
+    print("asd");
+    Dio dio = Dio();
+    var res = await dio.get(
+      'http://localhost:3000/audio_last',
+    );
+    if(res.statusCode == 200){
+      
+    print("200");
+    int last_audio_id = res.data['id'] as int;
+    print("last uploaded file id:" + last_audio_id.toString());
+
+    }
+    // try {
+    //    var response = await dio.get(
+    //   'http://localhost:3000/convert',
+    //     queryParameters: {
+    //     'userId': usr_id
+    //   }
+    // );
+    // if (response.statusCode == 200) {
+    //     print("File uploaded successfully");
+    // } else {
+    //     print("Failed to upload file with status code: ${response.statusCode}");
+    // }
+    // } catch (e) {
+    //   print("Error uploading file: $e");
+    // }
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => ResultsScreen(resultText: 'Солонго')),
+    // );
+
+    // print('Uploading file: $_fileName');
   }
 
   @override
@@ -96,7 +192,7 @@ class _HomePageState extends State<HomeScreen> {
                 ),
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _pickAudioFile,
+                  onPressed: pickFile,
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(Color(0xFF00c7c8)),
                     foregroundColor: WidgetStateProperty.all(Color(0xFF053140)),
@@ -148,7 +244,7 @@ class _HomePageState extends State<HomeScreen> {
                 ),
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _uploadAudioFile,
+                  onPressed: Convert,
                   child: Text(
                     'Хөрвүүлэх',
                     style: TextStyle(

@@ -1,21 +1,65 @@
 //LoginPage.dart
 
 
+import 'package:my_app/Model/User.dart';
+import 'package:my_app/Service/api.dart';
+import 'package:my_app/provider/provider.dart';
 import 'package:my_app/widgets/mainscreen.dart';
 import 'package:my_app/pages/SignUpPage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 
 class LoginScreen extends StatelessWidget {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+
+    final TextEditingController _emailController = TextEditingController();
+    final TextEditingController _passwordController = TextEditingController();
 
   void login() {
     print(
-        'Username: ${_usernameController.text}, Password: ${_passwordController.text}');
+        'Username: ${_emailController.text}, Password: ${_passwordController.text}'
+    );
   }
+
 
   @override
   Widget build(BuildContext context) {
+    
+  void checkLogin()async{
+    try {
+      final api = ApiService();
+        final res = await api.login(_emailController.text, _passwordController.text);
+        if(res.statusCode == 200){
+          
+          User a = User.fromJson(res.data);
+          print(a.name);
+          print(a.userId);
+          Provider.of<CommonProvider>(context, listen: false).updateUser(a);
+          try {
+            int? usr_id = Provider.of<CommonProvider>(context, listen: false).usr!.userId;
+            print("file uploading usr id"+ usr_id.toString());
+          } catch (e) {
+            print(e);
+          }
+          Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainScreen()),
+                    );
+        }else{
+       
+        }
+    } catch (e) {
+         ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Нууц үр, имэйл буруу"),
+                backgroundColor: Colors.red,
+              ),
+            );
+      print(e);
+    }
+        
+  }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Color(0xFF00C7C8),
@@ -29,7 +73,7 @@ class LoginScreen extends StatelessWidget {
                 height: 20,
               ),
               TextField(
-                controller: _usernameController,
+                controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Хэрэглэгчийн нэр',
                   filled: true, 
@@ -87,10 +131,7 @@ class LoginScreen extends StatelessWidget {
                 width: double.infinity, 
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => MainScreen()),
-                    );
+                    checkLogin();
                   },
                   child: Text(
                     'НЭВТРЭХ',

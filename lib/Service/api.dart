@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:ihamt/Service/interceptors.dart';
+import 'package:my_app/Service/interceptors.dart';
+import 'package:my_app/provider/provider.dart';
+import 'package:provider/provider.dart';
 
 class ApiService {
   final Dio dio;
@@ -49,16 +51,16 @@ class ApiService {
     }
   }
 
-  Future<Response> signup(String email, String password, String phone) async {
+  Future<Response> signup(String email, String password, String name) async {
     try {
-      print(phone);
+      print(name);
       print(email);
       print(password);
       final response = await dio.post(
         "/signup",
         queryParameters: {
-          "phone": phone,
-          "username": email,
+          "name": name,
+          "email": email,
           "password": password,
         },
       );
